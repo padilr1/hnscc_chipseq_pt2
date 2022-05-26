@@ -1,0 +1,512 @@
+---
+title: ""
+author: ""
+date: ""
+output:
+  html_document:
+    toc: true
+    toc_float: true
+    collapsed: false
+    number_sections: false
+    toc_depth: 3
+    smooth_scroll: false
+    theme: cerulean
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+library(knitr)
+library(reshape2)
+library(tidyverse)
+library(rtracklayer)
+library(isoband)
+library(sf)
+library(MASS)
+library(lwgeom)
+library(ggrepel)
+library(hexbin)
+library(ggrastr)
+library(viridis)
+library(pals)
+library(patchwork)
+library(highcharter)
+library(dplyr)
+library(GenomicRanges)
+library(reactable)
+library(data.table)
+library(gridExtra)
+library(ggpubr)
+library(gprofiler2)
+library(smplot)
+```
+
+```{r wd, echo=FALSE, message=FALSE, warning=FALSE, out.width='100%'}
+setwd("~/Documents/hnscc_chipseq/nsd2oe")
+wd <- paste0("~/Documents/hnscc_chipseq/nsd2oe")
+```
+
+# Cal27 NSD1KO-NSD2OE v PA
+
+## Clusters
+```{r cal27clus, echo=FALSE, fig.height=3, fig.width=8, message=FALSE, warning=FALSE}
+load("~/Documents/hnscc_chipseq/nsd2oe/plots/Cal27.PA.NSD2OE.K36me2.clus.fig.rda")
+ps$Cal27
+cell_line=paste0("Cal27")
+control=paste0("PA")
+test=paste0("NSD2OE")
+mark=paste0("K36me2")
+```
+
+## Annotations - cluster A {.tabset}
+
+### Ensembl regulatory build {.tabset .tabset-pills}
+
+#### Genome-wide
+
+```{r,echo=FALSE,message=FALSE,warning=FALSE,fig.show="hold", out.width="50%",fig.align='center'}
+load(sprintf("%s/plots/Cal27.PA.NSD2OE.K36me2.ensembl.ol.plot.enrich.rda",wd))
+p1 <- ensembl.ol.plot.enrich
+load("~/Documents/hnscc_chipseq/nsd2oe/plots/Cal27.PA.NSD2OE.K36me2.ensembl.ol.plot.dep.rda")
+p2 <- ensembl.ol.plot.dep
+hw_grid(p1,p2)
+```
+
+#### IGR
+
+```{r,echo = FALSE,fig.show = "hold", out.width = "50%", fig.align = "default"}
+load(sprintf("%s/plots/Cal27.PA.NSD2OE.K36me2.ensembl.ol.plot.enrich.igr.rda",wd))
+p1 <- ensembl.ol.plot.enrich
+load("~/Documents/hnscc_chipseq/nsd2oe/plots/Cal27.PA.NSD2OE.K36me2.ensembl.ol.plot.dep.igr.rda")
+p2 <- ensembl.ol.plot.dep
+hw_grid(p1,p2)
+```
+
+#### Genic
+```{r,echo = FALSE,fig.show = "hold", out.width = "50%", fig.align = "default"}
+load(sprintf("%s/plots/Cal27.PA.NSD2OE.K36me2.ensembl.ol.plot.enrich.g.rda",wd))
+p1 <- ensembl.ol.plot.enrich
+load("~/Documents/hnscc_chipseq/nsd2oe/plots/Cal27.PA.NSD2OE.K36me2.ensembl.ol.plot.dep.g.rda")
+p2 <- ensembl.ol.plot.dep
+hw_grid(p1,p2)
+```
+
+### ENCODE cCRE {.tabset .tabset-pills}
+
+#### Genome-wide
+```{r,echo=FALSE,message=FALSE,warning=FALSE,fig.show="hold", out.width="50%",fig.align='center'}
+load(file=sprintf("%s/plots/%s.%s.%s.%s.ccre.ol.plot.enrich.rda",wd,cell_line,control,test,mark))
+p1 <- ccre.ol.plot.enrich
+load(file=(sprintf('%s/plots/%s.%s.%s.%s.ccre.ol.plot.dep.rda',wd,cell_line,control,test,mark)))
+p2 <- ccre.ol.plot.dep
+hw_grid(p1,p2)
+```
+
+#### IGR
+
+```{r,echo = FALSE,fig.show = "hold", out.width = "50%", fig.align = "default"}
+load(file=sprintf("%s/plots/%s.%s.%s.%s.ccre.ol.plot.enrich.igr.rda",wd,cell_line,control,test,mark))
+p1 <- ccre.ol.plot.enrich
+load(file=(sprintf('%s/plots/%s.%s.%s.%s.ccre.ol.plot.dep.igr.rda',wd,cell_line,control,test,mark)))
+p2 <- ccre.ol.plot.dep
+hw_grid(p1,p2)
+```
+
+#### Genic
+
+```{r,echo = FALSE,fig.show = "hold", out.width = "50%", fig.align = "default"}
+load(file=sprintf("%s/plots/%s.%s.%s.%s.ccre.ol.plot.enrich.g.rda",wd,cell_line,control,test,mark))
+p1 <- ccre.ol.plot.enrich
+load(file=(sprintf('%s/plots/%s.%s.%s.%s.ccre.ol.plot.dep.g.rda',wd,cell_line,control,test,mark)))
+p2 <- ccre.ol.plot.dep
+hw_grid(p1,p2)
+```
+
+### RepeatMasker {.tabset .tabset-pills}
+
+#### Genome-wide
+
+```{r,echo=FALSE,message=FALSE,warning=FALSE,fig.show="hold", out.width="50%",fig.align='center'}
+load(file=sprintf("%s/plots/%s.%s.%s.%s.repeat.ol.plot.enrich.rda",wd,cell_line,control,test,mark))
+p1 <- repeat.ol.plot.enrich
+load(file=(sprintf('%s/plots/%s.%s.%s.%s.repeat.ol.plot.dep.rda',wd,cell_line,control,test,mark)))
+p2 <- repeat.ol.plot.dep
+hw_grid(p1,p2)
+```
+
+#### IGR
+
+```{r,echo=FALSE,message=FALSE,warning=FALSE,fig.show="hold", out.width="50%",fig.align='center'}
+load(file=sprintf("%s/plots/%s.%s.%s.%s.repeat.ol.plot.enrich.igr.rda",wd,cell_line,control,test,mark))
+p1 <- repeat.ol.plot.enrich
+load(file=(sprintf('%s/plots/%s.%s.%s.%s.repeat.ol.plot.dep.igr.rda',wd,cell_line,control,test,mark)))
+p2 <- repeat.ol.plot.dep
+hw_grid(p1,p2)
+```
+
+#### Genic 
+```{r,echo=FALSE,message=FALSE,warning=FALSE,fig.show="hold", out.width="50%",fig.align='center'}
+load(file=sprintf("%s/plots/%s.%s.%s.%s.repeat.ol.plot.enrich.g.rda",wd,cell_line,control,test,mark))
+p1 <- repeat.ol.plot.enrich
+load(file=(sprintf('%s/plots/%s.%s.%s.%s.repeat.ol.plot.dep.g.rda',wd,cell_line,control,test,mark)))
+p2 <- repeat.ol.plot.dep
+hw_grid(p1,p2)
+```
+
+---
+
+# SKN3-NSD2OE v PA
+
+## Clusters
+```{r echo = FALSE, warning=FALSE,message=FALSE,fig.width=8,fig.height=3}
+load("~/Documents/hnscc_chipseq/nsd2oe/plots/SKN3.P15.OE_NSD2.K36me2.clus.fig.rda")
+ps$SKN3
+cell_line=paste0("SKN3")
+control=paste0("P15")
+test=paste0("OE_NSD2")
+mark=paste0("K36me2")
+```
+
+## Annotations - cluster A {.tabset}
+
+### Ensembl regulatory build {.tabset .tabset-pills}
+
+#### Genome-wide
+```{r,echo=FALSE,message=FALSE,warning=FALSE,fig.show="hold", out.width="50%",fig.align='center'}
+load(file=sprintf("%s/plots/%s.%s.%s.%s.ensembl.ol.plot.enrich.rda",wd,cell_line,control,test,mark))
+p1 <- ensembl.ol.plot.enrich
+load(file=(sprintf('%s/plots/%s.%s.%s.%s.ensembl.ol.plot.dep.rda',wd,cell_line,control,test,mark)))
+p2 <- ensembl.ol.plot.dep
+hw_grid(p1,p2)
+```
+
+#### IGR
+```{r,echo=FALSE,message=FALSE,warning=FALSE,fig.show="hold", out.width="50%",fig.align='center'}
+load(file=sprintf("%s/plots/%s.%s.%s.%s.ensembl.ol.plot.enrich.igr.rda",wd,cell_line,control,test,mark))
+p1 <- ensembl.ol.plot.enrich
+load(file=(sprintf('%s/plots/%s.%s.%s.%s.ensembl.ol.plot.dep.igr.rda',wd,cell_line,control,test,mark)))
+p2 <- ensembl.ol.plot.dep
+hw_grid(p1,p2)
+```
+
+#### Genic
+```{r,echo=FALSE,message=FALSE,warning=FALSE,fig.show="hold", out.width="50%",fig.align='center'}
+load(file=sprintf("%s/plots/%s.%s.%s.%s.ensembl.ol.plot.enrich.g.rda",wd,cell_line,control,test,mark))
+p1 <- ensembl.ol.plot.enrich
+load(file=(sprintf('%s/plots/%s.%s.%s.%s.ensembl.ol.plot.dep.g.rda',wd,cell_line,control,test,mark)))
+p2 <- ensembl.ol.plot.dep
+hw_grid(p1,p2)
+```
+
+### ENCODE cCRE {.tabset .tabset-pills}
+
+#### Genome-wide
+```{r,echo=FALSE,message=FALSE,warning=FALSE,fig.show="hold", out.width="50%",fig.align='center'}
+load(file=sprintf("%s/plots/%s.%s.%s.%s.ccre.ol.plot.enrich.rda",wd,cell_line,control,test,mark))
+p1 <- ccre.ol.plot.enrich
+load(file=(sprintf('%s/plots/%s.%s.%s.%s.ccre.ol.plot.dep.rda',wd,cell_line,control,test,mark)))
+p2 <- ccre.ol.plot.dep
+hw_grid(p1,p2)
+```
+
+#### IGR
+
+```{r,echo = FALSE,fig.show = "hold", out.width = "50%", fig.align = "default"}
+load(file=sprintf("%s/plots/%s.%s.%s.%s.ccre.ol.plot.enrich.igr.rda",wd,cell_line,control,test,mark))
+p1 <- ccre.ol.plot.enrich
+load(file=(sprintf('%s/plots/%s.%s.%s.%s.ccre.ol.plot.dep.igr.rda',wd,cell_line,control,test,mark)))
+p2 <- ccre.ol.plot.dep
+hw_grid(p1,p2)
+```
+
+#### Genic
+
+```{r,echo = FALSE,fig.show = "hold", out.width = "50%", fig.align = "default"}
+load(file=sprintf("%s/plots/%s.%s.%s.%s.ccre.ol.plot.enrich.g.rda",wd,cell_line,control,test,mark))
+p1 <- ccre.ol.plot.enrich
+load(file=(sprintf('%s/plots/%s.%s.%s.%s.ccre.ol.plot.dep.g.rda',wd,cell_line,control,test,mark)))
+p2 <- ccre.ol.plot.dep
+hw_grid(p1,p2)
+```
+
+### RepeatMasker {.tabset .tabset-pills}
+
+#### Genome-wide
+
+```{r,echo=FALSE,message=FALSE,warning=FALSE,fig.show="hold", out.width="50%",fig.align='center'}
+load(file=sprintf("%s/plots/%s.%s.%s.%s.repeat.ol.plot.enrich.rda",wd,cell_line,control,test,mark))
+p1 <- repeat.ol.plot.enrich
+load(file=(sprintf('%s/plots/%s.%s.%s.%s.repeat.ol.plot.dep.rda',wd,cell_line,control,test,mark)))
+p2 <- repeat.ol.plot.dep
+hw_grid(p1,p2)
+```
+
+#### IGR
+```{r,echo=FALSE,message=FALSE,warning=FALSE,fig.show="hold", out.width="50%",fig.align='center'}
+load(file=sprintf("%s/plots/%s.%s.%s.%s.repeat.ol.plot.enrich.igr.rda",wd,cell_line,control,test,mark))
+p1 <- repeat.ol.plot.enrich
+load(file=(sprintf('%s/plots/%s.%s.%s.%s.repeat.ol.plot.dep.igr.rda',wd,cell_line,control,test,mark)))
+p2 <- repeat.ol.plot.dep
+hw_grid(p1,p2)
+```
+
+#### Genic 
+```{r,echo=FALSE,message=FALSE,warning=FALSE,fig.show="hold", out.width="50%",fig.align='center'}
+load(file=sprintf("%s/plots/%s.%s.%s.%s.repeat.ol.plot.enrich.g.rda",wd,cell_line,control,test,mark))
+p1 <- repeat.ol.plot.enrich
+load(file=(sprintf('%s/plots/%s.%s.%s.%s.repeat.ol.plot.dep.g.rda',wd,cell_line,control,test,mark)))
+p2 <- repeat.ol.plot.dep
+hw_grid(p1,p2)
+```
+
+---
+
+# SKN3-NSD2OE v SKN3-NSD1repair
+
+## Clusters
+```{r echo = FALSE, warning=FALSE,message=FALSE,fig.width=8,fig.height=3}
+load("~/Documents/hnscc_chipseq/nsd2oe/plots/SKN3.NSD1repair.OE_NSD2.K36me2.clus.fig.rda")
+ps$SKN3
+cell_line=paste0("SKN3")
+control=paste0("NSD1repair")
+test=paste0("OE_NSD2")
+mark=paste0("K36me2")
+```
+
+## Annotations - cluster A {.tabset}
+
+### Ensembl regulatory build {.tabset .tabset-pills}
+
+#### Genome-wide
+```{r,echo=FALSE,message=FALSE,warning=FALSE,fig.show="hold", out.width="50%",fig.align='center'}
+load(file=sprintf("%s/plots/%s.%s.%s.%s.ensembl.ol.plot.enrich.rda",wd,cell_line,control,test,mark))
+p1 <- ensembl.ol.plot.enrich
+load(file=(sprintf('%s/plots/%s.%s.%s.%s.ensembl.ol.plot.dep.rda',wd,cell_line,control,test,mark)))
+p2 <- ensembl.ol.plot.dep
+hw_grid(p1,p2)
+```
+
+#### IGR
+```{r,echo=FALSE,message=FALSE,warning=FALSE,fig.show="hold", out.width="50%",fig.align='center'}
+load(file=sprintf("%s/plots/%s.%s.%s.%s.ensembl.ol.plot.enrich.igr.rda",wd,cell_line,control,test,mark))
+p1 <- ensembl.ol.plot.enrich
+load(file=(sprintf('%s/plots/%s.%s.%s.%s.ensembl.ol.plot.dep.igr.rda',wd,cell_line,control,test,mark)))
+p2 <- ensembl.ol.plot.dep
+hw_grid(p1,p2)
+```
+
+#### Genic
+```{r,echo=FALSE,message=FALSE,warning=FALSE,fig.show="hold", out.width="50%",fig.align='center'}
+load(file=sprintf("%s/plots/%s.%s.%s.%s.ensembl.ol.plot.enrich.g.rda",wd,cell_line,control,test,mark))
+p1 <- ensembl.ol.plot.enrich
+load(file=(sprintf('%s/plots/%s.%s.%s.%s.ensembl.ol.plot.dep.g.rda',wd,cell_line,control,test,mark)))
+p2 <- ensembl.ol.plot.dep
+hw_grid(p1,p2)
+```
+
+---
+
+# FaDu-NSD2OE v PA
+
+```{r,echo=FALSE,message=FALSE,warning=FALSE,fig.show="hold", out.width="100%",fig.align='center'}
+lfc <- fread("~/Documents/hnscc_chipseq/nsd2oe/data/mat.csv/FaDu.PA.OE_NSD2.K36me2.mat.csv")
+smoothScatter(y = lfc$V1,x=lfc$V2,xlab = "PA",ylab="OE_NSD2")
+```
+
+---
+
+# Cal27 RNAseq
+
+```{r include = FALSE}
+load("~/Documents/hnscc_chipseq/data/res.nsd1ko.c1.RData")
+load("~/Documents/hnscc_chipseq/data/res.nsd1ko.c17.RData")
+load("~/Documents/hnscc_chipseq/data/res.oe_nsd2.RData")
+```
+
+## Upregulated {.tabset}
+
+### Relative to NSD1KO DEGs
+
+Cutoff: Log2FC > 2 & normalized mean counts > 400
+```{r,echo=FALSE,message=FALSE,warning=FALSE,fig.show="hold", out.width="100%",fig.align='center'}
+res.nsd1ko.c1.up <- res.nsd1ko.c1[res.nsd1ko.c1$baseMean>400,] %>%
+  dplyr::filter(log2FoldChange > 2)
+res.nsd1ko.c17.up <- res.nsd1ko.c17[res.nsd1ko.c17$baseMean>400,] %>%
+  dplyr::filter(log2FoldChange > 2)
+res.nsd1ko.c1.up$cond <- "NSD1KO.c1"
+res.nsd1ko.c17.up$cond <- "NSD1KO.c17"
+res.oe_nsd2$cond <- "OE_NSD2"
+#
+res.nsd1ko.oe_nsd2.up <- rbind(res.nsd1ko.c1.up,res.oe_nsd2[res.oe_nsd2$id %in% res.nsd1ko.c1.up$id,])
+res.nsd1ko_c17.oe_nsd2.up <- rbind(res.nsd1ko.c17.up,res.oe_nsd2[res.oe_nsd2$id %in% res.nsd1ko.c17.up$id,])
+#
+p1 <- ggplot(data = res.nsd1ko.oe_nsd2.up,aes(x = cond, y = log2FoldChange)) +
+  geom_violin(aes(fill = cond),show.legend = FALSE) +
+  geom_boxplot(width=0.1, color="grey", alpha=2) +
+  geom_line(aes(group = id),color="gray",alpha=0.3,size = 0.3) +
+  geom_point(alpha=0.1) +
+  xlab("") + 
+  theme_bw()
+stat.p1 <- compare_means(log2FoldChange ~ cond, data = res.nsd1ko.oe_nsd2.up,paired = TRUE,p.adjust.method = "fdr", method = 'wilcox.test') %>% dplyr::select(-".y.") %>%
+  mutate(y.position = c(11))
+p1.final <- p1 + stat_pvalue_manual(stat.p1, label = "p.adj = {p.adj}")
+#
+#
+p2 <- ggplot(data = res.nsd1ko_c17.oe_nsd2.up,aes(x = cond, y = log2FoldChange)) +
+  geom_violin(aes(fill = cond),show.legend = FALSE) +
+  geom_boxplot(width=0.1, color="grey", alpha=2) +
+  geom_line(aes(group = id),color="gray",alpha=0.3,size = 0.3) +
+  geom_point(alpha=0.1) +
+  xlab("") + 
+  theme_bw()
+#
+stat.p2 <- compare_means(log2FoldChange ~ cond, data = res.nsd1ko_c17.oe_nsd2.up,paired = TRUE,p.adjust.method = "fdr", method = 'wilcox.test') %>% dplyr::select(-".y.") %>%
+  mutate(y.position = c(11))
+p2.final <- p2 + stat_pvalue_manual(stat.p2, label = "p.adj = {p.adj}")
+#
+grid.arrange(p1.final,p2.final,ncol=2)
+```
+
+```{r,echo=FALSE,message=FALSE,warning=FALSE,fig.show="hold", out.width="100%",fig.align='center'}
+tbl <- data.frame(samp = c("NSD1KO_C1","NSD1KO_C17"),total_DEG=c("308","123"),less_up = c(302,115))
+reactable(tbl)
+```
+
+### Relative to NSD2OE DEGs
+
+Cutoff: Log2FC > 1 & normalized mean counts > 400
+```{r,echo=FALSE,message=FALSE,warning=FALSE,fig.show="hold", out.width="100%",fig.align='center'}
+res.oe_nsd2.up <- res.oe_nsd2[res.oe_nsd2$baseMean>400,] %>%
+  dplyr::filter(log2FoldChange > 1)
+#
+res.nsd1ko.c1$cond <- "NSD1KO.c1"
+res.nsd1ko.c17$cond <- "NSD1KO.c17"
+#
+res.oe_nsd2.nsd1ko_c1.up <- rbind(res.oe_nsd2.up,res.nsd1ko.c1[res.nsd1ko.c1$id %in% res.oe_nsd2.up$id,])
+res.oe_nsd2.nsd1ko_c17.up <- rbind(res.oe_nsd2.up,res.nsd1ko.c17[res.nsd1ko.c17$id %in% res.oe_nsd2.up$id,])
+#
+p1 <- ggplot(data = res.oe_nsd2.nsd1ko_c1.up,aes(x = cond, y = log2FoldChange)) +
+  geom_violin(aes(fill = cond),show.legend = FALSE) +
+  geom_boxplot(width=0.1, color="grey", alpha=2) +
+  geom_line(aes(group = id),color="gray",alpha=0.3,size = 0.3) +
+  geom_point(alpha=0.1) +
+  xlab("") + 
+  theme_bw()
+stat.p1 <- compare_means(log2FoldChange ~ cond, data = res.oe_nsd2.nsd1ko_c1.up,paired = TRUE,p.adjust.method = "fdr", method = 'wilcox.test') %>% dplyr::select(-".y.") %>%
+  mutate(y.position = c(11))
+p1.final <- p1 + stat_pvalue_manual(stat.p1, label = "p.adj = {p.adj}")
+#
+#
+p2 <- ggplot(data = res.oe_nsd2.nsd1ko_c17.up,aes(x = cond, y = log2FoldChange)) +
+  geom_violin(aes(fill = cond),show.legend = FALSE) +
+  geom_boxplot(width=0.1, color="grey", alpha=2) +
+  geom_line(aes(group = id),color="gray",alpha=0.3,size = 0.3) +
+  geom_point(alpha=0.1) +
+  xlab("") + 
+  theme_bw()
+#
+stat.p2 <- compare_means(log2FoldChange ~ cond, data = res.oe_nsd2.nsd1ko_c17.up,paired = TRUE,p.adjust.method = "fdr", method = 'wilcox.test') %>% dplyr::select(-".y.") %>%
+  mutate(y.position = c(11))
+p2.final <- p2 + stat_pvalue_manual(stat.p2, label = "p.adj = {p.adj}")
+#
+grid.arrange(p1.final,p2.final,ncol=2)
+```
+
+less upregulated here means lower gene expression changes in NSD1KO compared to NSD2OE (about 60% of DEGs)
+```{r,echo=FALSE,message=FALSE,warning=FALSE,fig.show="hold", out.width="100%",fig.align='center'}
+tbl <- data.frame(samp = c("NSD1KO_C1","NSD1KO_C17"),total_DEG=c("296","296"),less_up = c(179,185))
+reactable(tbl)
+```
+
+---
+
+## Downregulated {.tabset}
+
+### Relative to NSD1KO DEGs
+
+Cutoff: Log2FC < -2 & normalized mean counts > 400
+```{r,echo=FALSE,message=FALSE,warning=FALSE,fig.show="hold", out.width="100%",fig.align='center'}
+res.nsd1ko.c1.down <- res.nsd1ko.c1[res.nsd1ko.c1$baseMean>400,] %>%
+  dplyr::filter(log2FoldChange < -2)
+res.nsd1ko.c17.down <- res.nsd1ko.c17[res.nsd1ko.c17$baseMean>400,] %>%
+  dplyr::filter(log2FoldChange < -2)
+#
+res.nsd1ko.c1.down$cond <- "NSD1KO.c1"
+res.nsd1ko.c17.down$cond <- "NSD1KO.c17"
+#
+res.nsd1ko.oe_nsd2.down <- rbind(res.nsd1ko.c1.down,res.oe_nsd2[res.oe_nsd2$id %in% res.nsd1ko.c1.down$id,])
+res.nsd1ko_c17.oe_nsd2.down <- rbind(res.nsd1ko.c17.down,res.oe_nsd2[res.oe_nsd2$id %in% res.nsd1ko.c17.down$id,])
+#
+p1 <- ggplot(data = res.nsd1ko.oe_nsd2.down,aes(x = cond, y = log2FoldChange)) +
+  geom_violin(aes(fill = cond),show.legend = FALSE) +
+  geom_boxplot(width=0.1, color="grey", alpha=2) +
+  geom_line(aes(group = id),color="gray",alpha=0.3,size = 0.3) +
+  geom_point(alpha=0.1) +
+  xlab("") + 
+  theme_bw()
+#
+stat.p1 <- compare_means(log2FoldChange ~ cond, data = res.nsd1ko.oe_nsd2.down,paired = TRUE,p.adjust.method = "fdr", method = 'wilcox.test') %>% dplyr::select(-".y.") %>%
+  mutate(y.position = c(5))
+p1.final <- p1 + stat_pvalue_manual(stat.p1, label = "p.adj = {p.adj}")
+#
+p2 <- ggplot(data = res.nsd1ko_c17.oe_nsd2.down,aes(x = cond, y = log2FoldChange)) +
+  geom_violin(aes(fill = cond),show.legend = FALSE) +
+  geom_boxplot(width=0.1, color="grey", alpha=2) +
+  geom_line(aes(group = id),color="gray",alpha=0.3,size = 0.3) +
+  geom_point(alpha=0.1) +
+  xlab("") + 
+  theme_bw()
+stat.p2 <- compare_means(log2FoldChange ~ cond, data = res.nsd1ko_c17.oe_nsd2.down,paired = TRUE,p.adjust.method = "fdr", method = 'wilcox.test') %>% dplyr::select(-".y.") %>%
+  mutate(y.position = c(5))
+p2.final <- p2 + stat_pvalue_manual(stat.p2, label = "p.adj = {p.adj}")
+#
+grid.arrange(p1.final,p2.final,ncol=2)
+```
+
+```{r,echo=FALSE,message=FALSE,warning=FALSE,fig.show="hold", out.width="100%",fig.align='center'}
+tbl <- data.frame(samp = c("NSD1KO_C1","NSD1KO_C17"),total_DEG=c("233","212"),less_down = c(232,210))
+reactable(tbl)
+```
+
+### Relative to NSD2OE DEGs
+
+Cutoff: Log2FC < -1 & normalized mean counts > 400
+```{r,echo=FALSE,message=FALSE,warning=FALSE,fig.show="hold", out.width="100%",fig.align='center'}
+res.oe_nsd2.down <- res.oe_nsd2[res.oe_nsd2$baseMean>400,] %>%
+  dplyr::filter(log2FoldChange < -1)
+#
+#
+res.oe_nsd2.nsd1ko_c1.down <- rbind(res.oe_nsd2.down,res.nsd1ko.c1[res.nsd1ko.c1$id %in% res.oe_nsd2.down$id,])
+res.oe_nsd2.nsd1ko_c17.down <- rbind(res.oe_nsd2.down,res.nsd1ko.c17[res.nsd1ko.c17$id %in% res.oe_nsd2.down$id,])
+#
+p1 <- ggplot(data = res.oe_nsd2.nsd1ko_c1.down,aes(x = cond, y = log2FoldChange)) +
+  geom_violin(aes(fill = cond),show.legend = FALSE) +
+  geom_boxplot(width=0.1, color="grey", alpha=2) +
+  geom_line(aes(group = id),color="gray",alpha=0.3,size = 0.3) +
+  geom_point(alpha=0.1) +
+  xlab("") + 
+  theme_bw()
+stat.p1 <- compare_means(log2FoldChange ~ cond, data = res.oe_nsd2.nsd1ko_c1.down,paired = TRUE,p.adjust.method = "fdr", method = 'wilcox.test') %>% dplyr::select(-".y.") %>%
+  mutate(y.position = c(5))
+p1.final <- p1 + stat_pvalue_manual(stat.p1, label = "p.adj = {p.adj}")
+#
+#
+p2 <- ggplot(data = res.oe_nsd2.nsd1ko_c17.down,aes(x = cond, y = log2FoldChange)) +
+  geom_violin(aes(fill = cond),show.legend = FALSE) +
+  geom_boxplot(width=0.1, color="grey", alpha=2) +
+  geom_line(aes(group = id),color="gray",alpha=0.3,size = 0.3) +
+  geom_point(alpha=0.1) +
+  xlab("") + 
+  theme_bw()
+#
+stat.p2 <- compare_means(log2FoldChange ~ cond, data = res.oe_nsd2.nsd1ko_c17.down,paired = TRUE,p.adjust.method = "fdr", method = 'wilcox.test') %>% dplyr::select(-".y.") %>%
+  mutate(y.position = c(5))
+p2.final <- p2 + stat_pvalue_manual(stat.p2, label = "p.adj = {p.adj}")
+#
+grid.arrange(p1.final,p2.final,ncol=2)
+```
+
+less downregulated here means higher gene expression changes in NSD1KO compared to NSD2OE (about 35% of DEGs)
+```{r,echo=FALSE,message=FALSE,warning=FALSE,fig.show="hold", out.width="100%",fig.align='center'}
+tbl <- data.frame(samp = c("NSD1KO_C1","NSD1KO_C17"),total_DEG=c("192","192"),less_down = c(71,62))
+reactable(tbl)
+```
