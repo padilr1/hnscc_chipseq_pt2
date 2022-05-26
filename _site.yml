@@ -4,3 +4,4 @@ navbar:
   left:
     - text: "NSD2OE"
       href: index.html
+output_dir: "docs"
