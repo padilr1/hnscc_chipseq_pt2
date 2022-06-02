@@ -332,6 +332,11 @@ res.nsd1ko.c1.up <- res.nsd1ko.c1[res.nsd1ko.c1$baseMean>400,] %>%
   dplyr::filter(log2FoldChange > 2)
 res.nsd1ko.c17.up <- res.nsd1ko.c17[res.nsd1ko.c17$baseMean>400,] %>%
   dplyr::filter(log2FoldChange > 2)
+#
+# write.csv(res.nsd1ko.c17,file="~/Documents/hnscc_chipseq_pt2/misc/nsd1ko_nsd2oe.csv")
+
+# write.table(res.nsd1ko.c17.up[,c("id","log2FoldChange")] %>% arrange(desc(log2FoldChange)),file="~/Documents/hnscc_chipseq_pt2/misc/nsd1ko_clone17_upregulated_genes.txt",row.names = FALSE,quote = FALSE)
+#
 res.nsd1ko.c1.up$cond <- "NSD1KO.c1"
 res.nsd1ko.c17.up$cond <- "NSD1KO.c17"
 res.oe_nsd2$cond <- "OE_NSD2"
@@ -377,6 +382,8 @@ Cutoff: Log2FC > 1 & normalized mean counts > 400
 ```{r,echo=FALSE,message=FALSE,warning=FALSE,fig.show="hold", out.width="100%",fig.align='center'}
 res.oe_nsd2.up <- res.oe_nsd2[res.oe_nsd2$baseMean>400,] %>%
   dplyr::filter(log2FoldChange > 1)
+#
+# write.table(res.oe_nsd2.up[,c("id","log2FoldChange")] %>% arrange(desc(log2FoldChange)),file="~/Documents/hnscc_chipseq_pt2/misc/nsd1ko_nsd2oe_upregulated_genes.txt",row.names = FALSE,quote = FALSE)
 #
 res.nsd1ko.c1$cond <- "NSD1KO.c1"
 res.nsd1ko.c17$cond <- "NSD1KO.c17"
@@ -430,6 +437,8 @@ res.nsd1ko.c1.down <- res.nsd1ko.c1[res.nsd1ko.c1$baseMean>400,] %>%
 res.nsd1ko.c17.down <- res.nsd1ko.c17[res.nsd1ko.c17$baseMean>400,] %>%
   dplyr::filter(log2FoldChange < -2)
 #
+# write.table(res.nsd1ko.c17.down[,c("id","log2FoldChange")] %>% arrange((log2FoldChange)),file="~/Documents/hnscc_chipseq_pt2/misc/nsd1ko_clone17_downregulated_genes.txt",row.names = FALSE,quote = FALSE)
+#
 res.nsd1ko.c1.down$cond <- "NSD1KO.c1"
 res.nsd1ko.c17.down$cond <- "NSD1KO.c17"
 #
@@ -474,6 +483,7 @@ Cutoff: Log2FC < -1 & normalized mean counts > 400
 res.oe_nsd2.down <- res.oe_nsd2[res.oe_nsd2$baseMean>400,] %>%
   dplyr::filter(log2FoldChange < -1)
 #
+write.table(res.oe_nsd2.down[,c("id","log2FoldChange")] %>% arrange((log2FoldChange)),file="~/Documents/hnscc_chipseq_pt2/misc/nsd1ko_nsd2oe_downregulated_genes.txt",row.names = FALSE,quote = FALSE)
 #
 res.oe_nsd2.nsd1ko_c1.down <- rbind(res.oe_nsd2.down,res.nsd1ko.c1[res.nsd1ko.c1$id %in% res.oe_nsd2.down$id,])
 res.oe_nsd2.nsd1ko_c17.down <- rbind(res.oe_nsd2.down,res.nsd1ko.c17[res.nsd1ko.c17$id %in% res.oe_nsd2.down$id,])

@@ -4,4 +4,6 @@ navbar:
   left:
     - text: "NSD2OE"
       href: index.html
+    - text: "MM NSD2OE"
+      href: SecondPage.html
 output_dir: "docs"

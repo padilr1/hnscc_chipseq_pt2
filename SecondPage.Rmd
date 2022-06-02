@@ -1,0 +1,151 @@
+---
+title: ""
+author: ""
+date: ""
+output:
+  html_document:
+    toc: true
+    toc_float: true
+    collapsed: false
+    number_sections: false
+    toc_depth: 3
+    smooth_scroll: false
+    theme: cerulean
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+library(knitr)
+library(reshape2)
+library(tidyverse)
+library(rtracklayer)
+library(isoband)
+library(sf)
+library(MASS)
+library(lwgeom)
+library(ggrepel)
+library(hexbin)
+library(ggrastr)
+library(viridis)
+library(pals)
+library(patchwork)
+library(highcharter)
+library(dplyr)
+library(GenomicRanges)
+library(reactable)
+library(data.table)
+library(gridExtra)
+library(ggpubr)
+library(gprofiler2)
+library(smplot)
+```
+
+```{r wd, echo=FALSE, message=FALSE, warning=FALSE, out.width='100%'}
+setwd("~/Documents/hnscc_chipseq/nsd2oe")
+wd <- paste0("~/Documents/hnscc_chipseq/nsd2oe")
+```
+
+# MM NSD2high v NSD2low
+
+## Clusters
+```{r cal27clus, echo=FALSE, fig.height=3, fig.width=8, message=FALSE, warning=FALSE}
+load("~/Documents/hnscc_chipseq/nsd2oe/plots/MM.TKO_c1.NTKO.K36me2.clus.fig.rda")
+ps$MM
+cell_line=paste0("MM")
+control=paste0("TKO_c1")
+test=paste0("NTKO")
+mark=paste0("K36me2")
+```
+
+## Annotations - cluster A {.tabset}
+
+### Ensembl regulatory build {.tabset .tabset-pills}
+
+#### Genome-wide
+```{r,echo=FALSE,message=FALSE,warning=FALSE,fig.show="hold", out.width="50%",fig.align='center'}
+load(file=sprintf("%s/plots/%s.%s.%s.%s.ensembl.ol.plot.enrich.rda",wd,cell_line,control,test,mark))
+p1 <- ensembl.ol.plot.enrich
+load(file=(sprintf('%s/plots/%s.%s.%s.%s.ensembl.ol.plot.dep.rda',wd,cell_line,control,test,mark)))
+p2 <- ensembl.ol.plot.dep
+hw_grid(p1,p2)
+```
+
+#### IGR
+```{r,echo=FALSE,message=FALSE,warning=FALSE,fig.show="hold", out.width="50%",fig.align='center'}
+load(file=sprintf("%s/plots/%s.%s.%s.%s.ensembl.ol.plot.enrich.igr.rda",wd,cell_line,control,test,mark))
+p1 <- ensembl.ol.plot.enrich
+load(file=(sprintf('%s/plots/%s.%s.%s.%s.ensembl.ol.plot.dep.igr.rda',wd,cell_line,control,test,mark)))
+p2 <- ensembl.ol.plot.dep
+hw_grid(p1,p2)
+```
+
+#### Genic
+```{r,echo=FALSE,message=FALSE,warning=FALSE,fig.show="hold", out.width="50%",fig.align='center'}
+load(file=sprintf("%s/plots/%s.%s.%s.%s.ensembl.ol.plot.enrich.g.rda",wd,cell_line,control,test,mark))
+p1 <- ensembl.ol.plot.enrich
+load(file=(sprintf('%s/plots/%s.%s.%s.%s.ensembl.ol.plot.dep.g.rda',wd,cell_line,control,test,mark)))
+p2 <- ensembl.ol.plot.dep
+hw_grid(p1,p2)
+```
+### ENCODE cCRE {.tabset .tabset-pills}
+
+#### Genome-wide
+```{r,echo=FALSE,message=FALSE,warning=FALSE,fig.show="hold", out.width="50%",fig.align='center'}
+load(file=sprintf("%s/plots/%s.%s.%s.%s.ccre.ol.plot.enrich.rda",wd,cell_line,control,test,mark))
+p1 <- ccre.ol.plot.enrich
+load(file=(sprintf('%s/plots/%s.%s.%s.%s.ccre.ol.plot.dep.rda',wd,cell_line,control,test,mark)))
+p2 <- ccre.ol.plot.dep
+hw_grid(p1,p2)
+```
+
+#### IGR
+
+```{r,echo = FALSE,fig.show = "hold", out.width = "50%", fig.align = "default"}
+load(file=sprintf("%s/plots/%s.%s.%s.%s.ccre.ol.plot.enrich.igr.rda",wd,cell_line,control,test,mark))
+p1 <- ccre.ol.plot.enrich
+load(file=(sprintf('%s/plots/%s.%s.%s.%s.ccre.ol.plot.dep.igr.rda',wd,cell_line,control,test,mark)))
+p2 <- ccre.ol.plot.dep
+hw_grid(p1,p2)
+```
+
+#### Genic
+
+```{r,echo = FALSE,fig.show = "hold", out.width = "50%", fig.align = "default"}
+load(file=sprintf("%s/plots/%s.%s.%s.%s.ccre.ol.plot.enrich.g.rda",wd,cell_line,control,test,mark))
+p1 <- ccre.ol.plot.enrich
+load(file=(sprintf('%s/plots/%s.%s.%s.%s.ccre.ol.plot.dep.g.rda',wd,cell_line,control,test,mark)))
+p2 <- ccre.ol.plot.dep
+hw_grid(p1,p2)
+```
+
+### RepeatMasker {.tabset .tabset-pills}
+
+#### Genome-wide
+
+```{r,echo=FALSE,message=FALSE,warning=FALSE,fig.show="hold", out.width="50%",fig.align='center'}
+load(file=sprintf("%s/plots/%s.%s.%s.%s.repeat.ol.plot.enrich.rda",wd,cell_line,control,test,mark))
+p1 <- repeat.ol.plot.enrich
+load(file=(sprintf('%s/plots/%s.%s.%s.%s.repeat.ol.plot.dep.rda',wd,cell_line,control,test,mark)))
+p2 <- repeat.ol.plot.dep
+hw_grid(p1,p2)
+```
+
+#### IGR
+
+```{r,echo=FALSE,message=FALSE,warning=FALSE,fig.show="hold", out.width="50%",fig.align='center'}
+load(file=sprintf("%s/plots/%s.%s.%s.%s.repeat.ol.plot.enrich.igr.rda",wd,cell_line,control,test,mark))
+p1 <- repeat.ol.plot.enrich
+load(file=(sprintf('%s/plots/%s.%s.%s.%s.repeat.ol.plot.dep.igr.rda',wd,cell_line,control,test,mark)))
+p2 <- repeat.ol.plot.dep
+hw_grid(p1,p2)
+```
+
+#### Genic 
+```{r,echo=FALSE,message=FALSE,warning=FALSE,fig.show="hold", out.width="50%",fig.align='center'}
+load(file=sprintf("%s/plots/%s.%s.%s.%s.repeat.ol.plot.enrich.g.rda",wd,cell_line,control,test,mark))
+p1 <- repeat.ol.plot.enrich
+load(file=(sprintf('%s/plots/%s.%s.%s.%s.repeat.ol.plot.dep.g.rda',wd,cell_line,control,test,mark)))
+p2 <- repeat.ol.plot.dep
+hw_grid(p1,p2)
+```
+
